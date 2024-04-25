@@ -77,6 +77,17 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
 
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    implementation 'androidx.room:room-rxjava2:2.4.3'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.15'
+
 
     // android supports
     implementation "com.google.android.material:material:$versions.materialVersion"
