@@ -19,7 +19,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit{
         return Retrofit.Builder()
-            .baseUrl("https://mocki.io/v1/")
+            .baseUrl("https://mocki.io/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
