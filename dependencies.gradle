@@ -1,0 +1,60 @@
+ext.versions = [
+
+        minSdk              : 21,
+        compileSdk          : 33,
+        versionCode         : 1,
+        versionName         : '1.0.0',
+
+        // gradle plugins
+        gradleBuildTool     : '4.2.0',
+
+        ktlint              : '0.43.0',
+
+        // kotlin
+        kotlin              : '1.6.0',
+
+        // support library
+        materialVersion     : '1.6.0',
+
+        // architecture components
+        fragmentVersion     : '1.4.1',
+        lifecycleVersion    : '2.4.1',
+        roomVersion         : '2.4.2',
+
+        archCompomentVersion: '2.1.0',
+
+        // binding
+        bindablesVersion    : '1.0.9',
+
+
+        // di
+        hiltVersion         : '2.44',
+
+        // network
+        retrofitVersion     : '2.9.0',
+        okhttpVersion       : '4.9.3',
+
+        // coroutines
+        coroutinesVersion   : '1.6.1',
+
+        // glide
+        glideVersion        : '4.13.2',
+        glidePaletteVersion : '2.1.2',
+
+
+        // debugging
+        timberVersion       : '5.0.1',
+
+        // unit test
+        truthVersion        : '1.0.1',
+        junitVersion        : '4.13.1',
+        turbineVersion      : '0.6.0',
+        robolectricVersion  : '4.4',
+        androidxTest        : '1.3.0',
+        androidxTestJunit   : '1.1.2',
+        androidTestRunner   : '1.3.0-beta01',
+        espressoVersion     : '3.3.0',
+        mockitoKotlinVersion: '2.2.0',
+        mockitoInlineVersion: '3.5.13'
+
+]
