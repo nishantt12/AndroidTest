@@ -7,6 +7,6 @@ import retrofit2.http.GET
 
 interface MainApi {
 
-    @GET("/v1/509533c7-9a87-4edd-9db1-491c5ce48938")
+    @GET("/v1/9f5b71fc-555e-4090-8da6-9ea718ca0cba")
     fun getAppList(): Single<Response<List<MainModel>>>
 }

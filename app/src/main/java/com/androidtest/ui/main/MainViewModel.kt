@@ -1,5 +1,6 @@
 package com.androidtest.ui.main
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.androidtest.model.MainModel
 import com.androidtest.repository.MainRepository
@@ -9,6 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,18 +24,15 @@ class MainViewModel @Inject constructor(
         getList()
     }
 
+    @SuppressLint("CheckResult")
     private fun getList() {
-        mainRepository.fetchApplicationList()
+        mainRepository.getData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .debounce(400, TimeUnit.MILLISECONDS)
             .subscribe(
                 { list ->
                     _uiState.value = transform(list)
-//                    _uiState.value = listOf(
-//                        MainUiModel(title = "Test1", description = "Test", imageUrl = "Test"),
-//                        MainUiModel(title = "Test2", description = "Test", imageUrl = "Test"),
-//                        MainUiModel(title = "Test3", description = "Test", imageUrl = "Test"),
-//                    )
                 },
                 { throwable ->
                     throwable.printStackTrace()

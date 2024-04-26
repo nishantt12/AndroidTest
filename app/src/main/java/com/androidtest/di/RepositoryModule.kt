@@ -17,11 +17,10 @@ object RepositoryModule {
     @Provides
     @ViewModelScoped
     fun provideMainRepository(
-        coroutineDispatcher: CoroutineDispatcher,
         mainDao: MainDao,
         mainApi: MainApi,
     ): MainRepository {
-        return MainRepository(coroutineDispatcher, mainDao, mainApi)
+        return MainRepository(mainDao, mainApi)
     }
 
 }

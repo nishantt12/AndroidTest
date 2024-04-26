@@ -5,39 +5,57 @@ import com.androidtest.model.MainModel
 import com.androidtest.network.MainApi
 import com.androidtest.presistence.MainDao
 import com.androidtest.presistence.MainModelEntity
-import com.androidtest.ui.main.MainViewModel
-import io.reactivex.Single
-import kotlinx.coroutines.CoroutineDispatcher
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
-    private val ioDispatcher: CoroutineDispatcher,
     private val mainDao: MainDao,
     private val mainApi: MainApi,
 ) {
 
-    fun fetchApplicationList(
-    ): Single<List<MainModel>?> {
-        val list =
-            mainDao.getTalaList()
-                .flattenAsObservable { it }
-                .map {
-                    Log.e("database", "${it.title}")
-                    it.toMainModel()
+    fun getData(): Observable<List<MainModel>> {
+        return Observable.concatArray(
+            getDataFromDb(),
+            getDataFromApi()
+        )
+    }
+
+    private fun getDataFromDb(): Observable<List<MainModel>> {
+        return mainDao.getTalaList()
+            .filter {
+                it.isNotEmpty()
+            }
+            .map {
+                val newList = mutableListOf<MainModel>()
+                it.forEach {
+                    newList.add(it.toMainModel())
                 }
-                .toList()
-                .onErrorResumeNext {
-                    mainApi.getAppList().map {
-                        Log.e("mapper", "is it null $it")
-                        val entity = transform(it.body())
-                        mainDao.insertTalaList(entity)
-                        it.body()
-                    }
-                }
+                newList.toList()
+            }
+            .toObservable()
+    }
 
+    private fun getDataFromApi(): Observable<List<MainModel>> {
+        return mainApi.getAppList()
+            .map {
+                it.body()!!
+            }
+            .toObservable()
+            .doOnNext {
+                storeDataInDb(it)
+            }
+    }
 
+    private fun storeDataInDb(mainModel: List<MainModel>) {
+        val entity = transform(mainModel)
+        Observable.fromCallable { mainDao.insertTalaList(entity) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                Log.d("database", "Inserted")
+            }
 
-        return list
     }
 
     private fun transform(mainModelList: List<MainModel>?): List<MainModelEntity> {
