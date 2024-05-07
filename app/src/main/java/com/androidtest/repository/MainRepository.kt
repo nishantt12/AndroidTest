@@ -6,6 +6,7 @@ import com.androidtest.network.MainApi
 import com.androidtest.presistence.MainDao
 import com.androidtest.presistence.MainModelEntity
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -24,7 +25,12 @@ class MainRepository @Inject constructor(
     private fun getDataFromDb(): Observable<List<MainModel>> {
         return mainDao.getTalaList()
             .filter {
+                Log.e("Name","Thread: ${Thread.currentThread().name}1")
                 it.isNotEmpty()
+            }
+            .doOnComplete {
+                Log.e("Complete","Testing complete 2")
+
             }
             .map {
                 val newList = mutableListOf<MainModel>()
@@ -39,12 +45,29 @@ class MainRepository @Inject constructor(
     private fun getDataFromApi(): Observable<List<MainModel>> {
         return mainApi.getAppList()
             .map {
+                Log.e("Name","Thread: ${Thread.currentThread().name}")
                 it.body()!!
+            }
+            .onErrorResumeNext {
+                Log.e("Name","Thread: ${Thread.currentThread().name}")
+                it.printStackTrace()
+                Single.just(emptyList())
+            }
+            .filter {
+                Log.e("Name","Thread: ${Thread.currentThread()}")
+
+                it.isNotEmpty()
+            }
+            .doOnComplete {
+                Log.e("Complete","Testing complete 3")
+
             }
             .toObservable()
             .doOnNext {
-                storeDataInDb(it)
+                if (it.isNotEmpty())
+                    storeDataInDb(it)
             }
+
     }
 
     private fun storeDataInDb(mainModel: List<MainModel>) {
@@ -70,7 +93,7 @@ class MainRepository @Inject constructor(
     }
 
 
-    fun MainModelEntity.toMainModel(): MainModel {
+    private fun MainModelEntity.toMainModel(): MainModel {
         return MainModel(
             id,
             title,
@@ -80,7 +103,7 @@ class MainRepository @Inject constructor(
     }
 
 
-    fun MainModel.toMainModelEntity(): MainModelEntity {
+    private fun MainModel.toMainModelEntity(): MainModelEntity {
         return MainModelEntity(
             id,
             title,

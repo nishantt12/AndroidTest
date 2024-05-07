@@ -4,14 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,18 +62,28 @@ fun Greeting(
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        items(uiState) {
-            MainCard(
-                title = it.title,
-                description = it.description,
-                imageUrl = it.imageUrl
-            )
+    Column(modifier = Modifier
+        .fillMaxWidth()) {
+            Button(onClick = { mainViewModel.getList() },
+        modifier = Modifier.padding(16.dp)
+            .height(40.dp)) {
+        Text(text = "Retry")
+    }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            items(uiState) {
+                MainCard(
+                    title = it.title,
+                    description = it.description,
+                    imageUrl = it.imageUrl
+                )
+            }
         }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.androidtest.ui.main
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.androidtest.model.MainModel
 import com.androidtest.repository.MainRepository
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
-    ) : ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(emptyList<MainUiModel>())
     val uiState: StateFlow<List<MainUiModel>> = _uiState.asStateFlow()
 
@@ -25,30 +26,35 @@ class MainViewModel @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    private fun getList() {
+    public fun getList() {
         mainRepository.getData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .debounce(400, TimeUnit.MILLISECONDS)
+            .doOnComplete {
+                Log.e("Complete","Testing complete 1")
+            }
+//            .debounce(400, TimeUnit.MILLISECONDS)
             .subscribe(
                 { list ->
-                    _uiState.value = transform(list)
+                    Log.e("Name","Thread: ${Thread.currentThread().name}3")
+                        _uiState.value = transform(list)
                 },
                 { throwable ->
                     throwable.printStackTrace()
                 },
             )
 
+
     }
 
     private fun transform(mainModelList: List<MainModel>?): List<MainUiModel> {
-            val mainUiModelList = mutableListOf<MainUiModel>()
+        val mainUiModelList = mutableListOf<MainUiModel>()
 
-            mainModelList?.forEach {
-                mainUiModelList.add(
-                    MainUiModel(it.title, it.description, it.imageSrc)
-                )
-            }
+        mainModelList?.forEach {
+            mainUiModelList.add(
+                MainUiModel(it.title, it.description, it.imageSrc)
+            )
+        }
         return mainUiModelList
     }
 
